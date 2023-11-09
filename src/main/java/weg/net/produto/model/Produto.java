@@ -11,22 +11,36 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Produto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long codigoBarras;
+
     @Column(nullable = false)
     private String nome;
-    private Double preco;
-    private Integer estoque;
+
     @Column(nullable = false)
-    private String data;
+    private Double preco;
+
+    private Integer estoque;
+
+    @Column(nullable = false)
+    private String dataValidade;
+
+    @Column(nullable = false)
+    private String descricao;
+
+    @Column(nullable = false)
+    private Long codigoBarras;
+
     @Column(nullable = false)
     private Double peso;
+
     @Column(nullable = false)
     private Double medida;
+
     @Column(nullable = false)
     @ManyToOne
     private Fabricante fabricante;
+
     @Column(nullable = false)
     @ManyToOne
     private Categoria categoria;
