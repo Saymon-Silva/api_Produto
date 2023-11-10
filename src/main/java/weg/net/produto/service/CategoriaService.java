@@ -13,8 +13,11 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
     public void cadastrar(Categoria categoria) {
-        if (verificaParametros(categoria)) {
+        try {
+            verificaParametros(categoria);
             categoriaRepository.save(categoria);
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -51,6 +54,15 @@ public class CategoriaService {
             throw new RuntimeException("O nome é um atributo obrigatorio!");
         }
         return true;
+    }
+
+    public boolean verificaSegundaEtapaAtributos(Categoria categoria){
+        try{
+            verificaParametros(categoria);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
 

@@ -21,7 +21,7 @@ public class fabricanteController {
             fabricanteService.cadastrar(fabricante);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            if (!fabricanteService.verificaParametros(fabricante)) {
+            if (!fabricanteService.verificaSegundaEtapaAtributos(fabricante)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(HttpStatus.CONFLICT);

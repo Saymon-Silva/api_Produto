@@ -21,7 +21,7 @@ public class ProdutoController {
             produtoService.cadastrar(produto);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            if (!produtoService.validacaoAtributosNotNull(produto)) {
+            if (!produtoService.verificaSegundaEtapaAtributos(produto)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(HttpStatus.CONFLICT);

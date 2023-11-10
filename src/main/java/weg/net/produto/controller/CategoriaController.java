@@ -21,7 +21,7 @@ public class CategoriaController {
             categoriaService.cadastrar(categoria);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            if (!categoriaService.verificaParametros(categoria)) {
+            if (!categoriaService.verificaSegundaEtapaAtributos(categoria)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(HttpStatus.CONFLICT);

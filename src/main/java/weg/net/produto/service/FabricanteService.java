@@ -14,8 +14,11 @@ public class FabricanteService {
     private final FabricanteRepository fabricanteRepository;
 
     public void cadastrar(Fabricante fabricante) {
-        if (verificaParametros(fabricante)) {
+        try {
+            verificaParametros(fabricante);
             fabricanteRepository.save(fabricante);
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -52,5 +55,13 @@ public class FabricanteService {
             throw new RuntimeException("O nome é um atributo obrigatorio!");
         }
         return true;
+    }
+    public boolean verificaSegundaEtapaAtributos(Fabricante fabricante){
+        try{
+            verificaParametros(fabricante);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }

@@ -2,6 +2,7 @@ package weg.net.produto.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import weg.net.produto.model.Categoria;
 import weg.net.produto.model.Produto;
 import weg.net.produto.repository.ProdutoRepository;
 
@@ -13,8 +14,8 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public void cadastrar(Produto produto) {
-
-        if (validacaoAtributosNotNull(produto)) {
+        try {
+            validacaoAtributosNotNull(produto);
             if (validarProdutoPorCodigoBarras(produto)) {
                 produtoRepository.save(produto);
                 produto.setEstoque(produto.getEstoque() + 1);
@@ -24,6 +25,8 @@ public class ProdutoService {
                 throw new RuntimeException("Já possui um produto com o codigo de barras: " + produto.getCodigoBarras() + "\n" +
                         "Será adicionado um novo item ao estoque do mesmo.");
             }
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -86,6 +89,14 @@ public class ProdutoService {
             throw new RuntimeException("O produto obrigatoriamente precisa possuir codigo de barra!");
         }
         return true;
+    }
+    public boolean verificaSegundaEtapaAtributos(Produto produto){
+        try{
+            validacaoAtributosNotNull(produto);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public boolean validarProdutoPorCodigoBarras(Produto produto) {
