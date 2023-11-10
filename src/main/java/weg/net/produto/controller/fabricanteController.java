@@ -1,33 +1,51 @@
 package weg.net.produto.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import weg.net.produto.model.Fabricante;
-import weg.net.produto.repository.FabricanteRepository;
 import weg.net.produto.service.FabricanteService;
 
 import java.util.List;
 
 @RequestMapping("/fabricante")
 @AllArgsConstructor
-@Controller
+@RestController
 public class fabricanteController {
     private final FabricanteService fabricanteService;
 
     @PostMapping
-    public void cadastrar(@RequestBody Fabricante fabricante) {
-        fabricanteService.cadastrar(fabricante);
+    public ResponseEntity<Fabricante> cadastrar(@RequestBody Fabricante fabricante) {
+        try {
+            fabricanteService.cadastrar(fabricante);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            if (!fabricanteService.verificaParametros(fabricante)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PutMapping
-    public void editar(@RequestBody Fabricante fabricante) {
-        fabricanteService.editar(fabricante);
+    public ResponseEntity<Fabricante> editar(@RequestBody Fabricante fabricante) {
+        try {
+            fabricanteService.editar(fabricante);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{id}")
-    public void editar(@PathVariable Integer id) {
-        fabricanteService.editar(id);
+    public ResponseEntity<Fabricante> editar(@PathVariable Integer id) {
+        try {
+            fabricanteService.editar(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -36,12 +54,16 @@ public class fabricanteController {
     }
 
     @GetMapping("/{id}")
-    public Fabricante buscarUm(@PathVariable Integer id) {
-        return fabricanteService.buscarUm(id);
+    public ResponseEntity<Fabricante> buscarUm(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<>(fabricanteService.buscarUm(id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping
-    public List<Fabricante> buscarTodos() {
-        return fabricanteService.buscarTodos();
+    public ResponseEntity<List<Fabricante>> buscarTodos() {
+        return new ResponseEntity<>(fabricanteService.buscarTodos(), HttpStatus.OK);
     }
 }

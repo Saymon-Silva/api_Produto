@@ -37,12 +37,11 @@ public class Produto {
     @Column(nullable = false)
     private Double medida;
 
-    @Column(nullable = false)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "fabricante_id", nullable = false)
     private Fabricante fabricante;
 
-    @Column(nullable = false)
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
-
 }

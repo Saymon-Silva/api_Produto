@@ -13,42 +13,8 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
 
     public void cadastrar(Produto produto) {
-        if (validacaoNomeNull(produto)) {
-            throw new RuntimeException("É necessaria a inserção de um nome!");
-        }
-        if (validacaoPrecoMaiorZero(produto)) {
-            if (produto.getPreco() <= 0) {
-                throw new RuntimeException("O produto não pode possuir preço negativo!");
-            }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir preço!");
-        }
-        if (validacaoDataValidadeNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir data de validade!");
-        }
-        if (validacaoDescricaoNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir descrição");
-        }
-        if (validacaoPesoMaioZero(produto)) {
-            if (produto.getPeso() <= 0) {
-                throw new RuntimeException("O produto não pode possuir peso negativo!");
-            }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir peso!");
-        }
-        if (validacaoMedidaMaioZero(produto)){
-            if (produto.getMedida() <= 0) {
-                throw new RuntimeException("O produto não pode possuir medida negativa!");
-            }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir medida!");
-        }
-        if(validacaoFabricanteNull(produto)){
-            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre seu fabricante!");
-        }
-        if(validacaoCategoriaNull(produto)){
-            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre sua categoria!");
-        }
-        if(validacaoCodigoBarraNull(produto)){
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir codigo de barra!");
-        }
+
+        if (validacaoAtributosNotNull(produto)) {
             if (validarProdutoPorCodigoBarras(produto)) {
                 produtoRepository.save(produto);
                 produto.setEstoque(produto.getEstoque() + 1);
@@ -58,6 +24,7 @@ public class ProdutoService {
                 throw new RuntimeException("Já possui um produto com o codigo de barras: " + produto.getCodigoBarras() + "\n" +
                         "Será adicionado um novo item ao estoque do mesmo.");
             }
+        }
     }
 
     public void editar(Produto produto) {
@@ -79,6 +46,46 @@ public class ProdutoService {
 
     public List<Produto> buscarTodos() {
         return produtoRepository.findAll();
+    }
+
+    public boolean validacaoAtributosNotNull(Produto produto) {
+        if (validacaoNomeNull(produto)) {
+            throw new RuntimeException("É necessaria a inserção de um nome!");
+        }
+        if (validacaoPrecoMaiorZero(produto)) {
+            if (produto.getPreco() <= 0) {
+                throw new RuntimeException("O produto não pode possuir preço negativo!");
+            }
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir preço!");
+        }
+        if (validacaoDataValidadeNull(produto)) {
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir data de validade!");
+        }
+        if (validacaoDescricaoNull(produto)) {
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir descrição");
+        }
+        if (validacaoPesoMaioZero(produto)) {
+            if (produto.getPeso() <= 0) {
+                throw new RuntimeException("O produto não pode possuir peso negativo!");
+            }
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir peso!");
+        }
+        if (validacaoMedidaMaioZero(produto)) {
+            if (produto.getMedida() <= 0) {
+                throw new RuntimeException("O produto não pode possuir medida negativa!");
+            }
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir medida!");
+        }
+        if (validacaoFabricanteNull(produto)) {
+            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre seu fabricante!");
+        }
+        if (validacaoCategoriaNull(produto)) {
+            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre sua categoria!");
+        }
+        if (validacaoCodigoBarraNull(produto)) {
+            throw new RuntimeException("O produto obrigatoriamente precisa possuir codigo de barra!");
+        }
+        return true;
     }
 
     public boolean validarProdutoPorCodigoBarras(Produto produto) {

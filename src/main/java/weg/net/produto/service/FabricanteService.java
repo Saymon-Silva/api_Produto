@@ -2,6 +2,7 @@ package weg.net.produto.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import weg.net.produto.model.Categoria;
 import weg.net.produto.model.Fabricante;
 import weg.net.produto.repository.FabricanteRepository;
 
@@ -12,23 +13,44 @@ import java.util.List;
 public class FabricanteService {
     private final FabricanteRepository fabricanteRepository;
 
-    public void cadastrar(Fabricante fabricante){
+    public void cadastrar(Fabricante fabricante) {
+        if (verificaParametros(fabricante)) {
+            fabricanteRepository.save(fabricante);
+        }
+    }
+
+    public void editar(Fabricante fabricante) {
         fabricanteRepository.save(fabricante);
     }
-    public void editar(Fabricante fabricante){
-        fabricanteRepository.save(fabricante);
-    }
-    public void editar(Integer id){
+
+    public void editar(Integer id) {
         Fabricante fabricanteEdicao = buscarUm(id);
         fabricanteRepository.save(fabricanteEdicao);
     }
-    public void deletar(Integer id){
+
+    public void deletar(Integer id) {
         fabricanteRepository.deleteById(id);
     }
-    public Fabricante buscarUm(Integer id){
+
+    public Fabricante buscarUm(Integer id) {
         return fabricanteRepository.findById(id).get();
     }
-    public List<Fabricante> buscarTodos(){
+
+    public List<Fabricante> buscarTodos() {
         return fabricanteRepository.findAll();
+    }
+
+    public boolean verificarNomeNull(Fabricante fabricante) {
+        if (fabricante.getNome() == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean verificaParametros(Fabricante fabricante) {
+        if (verificarNomeNull(fabricante)) {
+            throw new RuntimeException("O nome é um atributo obrigatorio!");
+        }
+        return true;
     }
 }

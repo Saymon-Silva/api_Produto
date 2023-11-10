@@ -13,8 +13,13 @@ import java.util.List;
 @Entity
 public class Categoria {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Integer id;
+
+    @Column(nullable = false)
     private String nome;
+
     @OneToMany(mappedBy = "categoria")
     private List<Produto> listaProdutos;
 }

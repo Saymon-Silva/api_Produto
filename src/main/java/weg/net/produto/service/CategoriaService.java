@@ -13,13 +13,16 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
     public void cadastrar(Categoria categoria) {
-        categoriaRepository.save(categoria);
+        if (verificaParametros(categoria)) {
+            categoriaRepository.save(categoria);
+        }
     }
 
     public void editar(Categoria categoria) {
         categoriaRepository.save(categoria);
     }
-    public void editar(Integer id){
+
+    public void editar(Integer id) {
         Categoria categoriaEdicao = buscarUm(id);
         categoriaRepository.save(categoriaEdicao);
     }
@@ -35,4 +38,26 @@ public class CategoriaService {
     public List<Categoria> buscarTodos() {
         return categoriaRepository.findAll();
     }
+
+    public boolean verificarNomeNull(Categoria categoria) {
+        if (categoria.getNome() == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean verificaParametros(Categoria categoria) {
+        if (verificarNomeNull(categoria)) {
+            throw new RuntimeException("O nome é um atributo obrigatorio!");
+        }
+        return true;
+    }
+
+
+//    public boolean buscarCategoria(Categoria categoria){
+//        if (buscarUm(categoria.getId()) != null){
+//            return true;
+//        }
+//        return false;
+//    }
 }
