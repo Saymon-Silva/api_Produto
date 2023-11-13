@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import weg.net.produto.exception.ExceptionConflito;
 import weg.net.produto.model.Categoria;
 import weg.net.produto.service.CategoriaService;
+import weg.net.produto.exception.ExceptionDadosFaltantes;
 
 import java.util.List;
 
@@ -20,11 +22,12 @@ public class CategoriaController {
         try {
             categoriaService.cadastrar(categoria);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            if (!categoriaService.verificaSegundaEtapaAtributos(categoria)) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        } catch (ExceptionDadosFaltantes e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ExceptionConflito e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

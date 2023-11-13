@@ -20,6 +20,8 @@ public class Categoria {
     @Column(nullable = false)
     private String nome;
 
+    private String descricao;
+
     @OneToMany(mappedBy = "categoria")
     private List<Produto> listaProdutos;
 }

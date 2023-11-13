@@ -21,6 +21,8 @@ public class Fabricante {
     @Column(nullable = false)
     private String nome;
 
+    private String descricao;
+
     @OneToMany(mappedBy = "fabricante")
 //    @JsonIgnore
     private List<Produto> estoqueProdutos;

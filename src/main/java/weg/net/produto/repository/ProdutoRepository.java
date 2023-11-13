@@ -6,5 +6,8 @@ import weg.net.produto.model.Produto;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
+    boolean existsByCodigoBarras(Long codigo);
+
+    Produto findByCodigoBarras(Long codigo);
 
 }

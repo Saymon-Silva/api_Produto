@@ -2,7 +2,7 @@ package weg.net.produto.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import weg.net.produto.model.Categoria;
+import weg.net.produto.exception.ExceptionDadosFaltantes;
 import weg.net.produto.model.Fabricante;
 import weg.net.produto.repository.FabricanteRepository;
 
@@ -52,16 +52,16 @@ public class FabricanteService {
 
     public boolean verificaParametros(Fabricante fabricante) {
         if (verificarNomeNull(fabricante)) {
-            throw new RuntimeException("O nome é um atributo obrigatorio!");
+            throw new ExceptionDadosFaltantes("O nome é um atributo obrigatorio!");
         }
         return true;
     }
-    public boolean verificaSegundaEtapaAtributos(Fabricante fabricante){
-        try{
-            verificaParametros(fabricante);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
+//    public boolean verificaSegundaEtapaAtributos(Fabricante fabricante){
+//        try{
+//            verificaParametros(fabricante);
+//            return true;
+//        }catch (Exception e){
+//            return false;
+//        }
+//    }
 }

@@ -7,8 +7,9 @@ import weg.net.produto.repository.CategoriaRepository;
 
 import java.util.List;
 
-@Service
 @AllArgsConstructor
+
+@Service
 public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
@@ -56,14 +57,14 @@ public class CategoriaService {
         return true;
     }
 
-    public boolean verificaSegundaEtapaAtributos(Categoria categoria){
-        try{
-            verificaParametros(categoria);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
+//    public boolean verificaSegundaEtapaAtributos(Categoria categoria){
+//        try{
+//            verificaParametros(categoria);
+//            return true;
+//        }catch (Exception e){
+//            return false;
+//        }
+//    }
 
 
 //    public boolean buscarCategoria(Categoria categoria){

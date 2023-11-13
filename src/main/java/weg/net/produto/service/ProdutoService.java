@@ -2,7 +2,8 @@ package weg.net.produto.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import weg.net.produto.model.Categoria;
+import weg.net.produto.exception.ExceptionConflito;
+import weg.net.produto.exception.ExceptionDadosFaltantes;
 import weg.net.produto.model.Produto;
 import weg.net.produto.repository.ProdutoRepository;
 
@@ -16,15 +17,12 @@ public class ProdutoService {
     public void cadastrar(Produto produto) {
         try {
             validacaoAtributosNotNull(produto);
-            if (validarProdutoPorCodigoBarras(produto)) {
-                produtoRepository.save(produto);
-                produto.setEstoque(produto.getEstoque() + 1);
-            } else {
-                Produto produtoOriginal = buscarProdutoPorCodigoBarras(produto);
-                produtoOriginal.setEstoque(produtoOriginal.getEstoque() + 1);
-                throw new RuntimeException("Já possui um produto com o codigo de barras: " + produto.getCodigoBarras() + "\n" +
-                        "Será adicionado um novo item ao estoque do mesmo.");
-            }
+            validarProdutoPorCodigoBarras(produto);
+            produtoRepository.save(produto);
+        } catch (ExceptionConflito e) {
+            Produto produtoOriginal = buscarProdutoPorCodigoBarras(produto);
+            produtoOriginal.setEstoque(produtoOriginal.getEstoque() + produto.getEstoque());
+            produtoRepository.save(produtoOriginal);
         } catch (Exception e) {
             throw e;
         }
@@ -51,72 +49,61 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
-    public boolean validacaoAtributosNotNull(Produto produto) {
+    public void validacaoAtributosNotNull(Produto produto) {
         if (validacaoNomeNull(produto)) {
-            throw new RuntimeException("É necessaria a inserção de um nome!");
+            throw new ExceptionDadosFaltantes("É necessaria a inserção de um nome!");
         }
         if (validacaoPrecoMaiorZero(produto)) {
             if (produto.getPreco() <= 0) {
-                throw new RuntimeException("O produto não pode possuir preço negativo!");
+                throw new ExceptionDadosFaltantes("O produto não pode possuir preço negativo!");
             }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir preço!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir preço!");
         }
         if (validacaoDataValidadeNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir data de validade!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir data de validade!");
         }
         if (validacaoDescricaoNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir descrição");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir descrição");
         }
         if (validacaoPesoMaioZero(produto)) {
             if (produto.getPeso() <= 0) {
-                throw new RuntimeException("O produto não pode possuir peso negativo!");
+                throw new ExceptionDadosFaltantes("O produto não pode possuir peso negativo!");
             }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir peso!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir peso!");
         }
         if (validacaoMedidaMaioZero(produto)) {
             if (produto.getMedida() <= 0) {
-                throw new RuntimeException("O produto não pode possuir medida negativa!");
+                throw new ExceptionDadosFaltantes("O produto não pode possuir medida negativa!");
             }
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir medida!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir medida!");
         }
         if (validacaoFabricanteNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre seu fabricante!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa ter informações sobre seu fabricante!");
         }
         if (validacaoCategoriaNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa ter informações sobre sua categoria!");
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa ter informações sobre sua categoria!");
         }
         if (validacaoCodigoBarraNull(produto)) {
-            throw new RuntimeException("O produto obrigatoriamente precisa possuir codigo de barra!");
-        }
-        return true;
-    }
-    public boolean verificaSegundaEtapaAtributos(Produto produto){
-        try{
-            validacaoAtributosNotNull(produto);
-            return true;
-        }catch (Exception e){
-            return false;
+            throw new ExceptionDadosFaltantes("O produto obrigatoriamente precisa possuir codigo de barra!");
         }
     }
+//    public boolean verificaSegundaEtapaAtributos(Produto produto){
+//        try{
+//            validacaoAtributosNotNull(produto);
+//            return true;
+//        }catch (Exception e){
+//            return false;
+//        }
+//    }
 
-    public boolean validarProdutoPorCodigoBarras(Produto produto) {
-        List<Produto> produtos = buscarTodos();
-        for (Produto produtoFor : produtos) {
-            if (produtoFor.getCodigoBarras() == produto.getCodigoBarras()) {
-                return false;
-            }
+    public void validarProdutoPorCodigoBarras(Produto produto) {
+        if (produtoRepository.existsByCodigoBarras(produto.getCodigoBarras())) {
+            throw new ExceptionConflito();
         }
-        return true;
     }
 
     public Produto buscarProdutoPorCodigoBarras(Produto produto) {
-        List<Produto> produtos = buscarTodos();
-        for (Produto produtoFor : produtos) {
-            if (produtoFor.getCodigoBarras() == produto.getCodigoBarras()) {
-                return produtoFor;
-            }
-        }
-        return null;
+        return produtoRepository.findByCodigoBarras(produto.getCodigoBarras());
     }
 
     public boolean validacaoNomeNull(Produto produto) {
